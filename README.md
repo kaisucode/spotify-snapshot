@@ -7,4 +7,10 @@ This will create a new playlist in your spotify account, with all music added to
 
 ## Installation
 `pip install -r requirements.txt`
+`./install.sh`
+Replace the contents of `username.txt` with your spotify username
+
+## Usage
+change the `afterThisDate` timestamp variable to the desired time
+`python main.py`
 
