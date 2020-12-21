@@ -88,6 +88,8 @@ for playlist in allPlaylists:
             print(trackId)
             print(trackName)
 
+newTracks = list(set(newTracks))
+
 
 # create new playlist
 sp.user_playlist_create(username, "spotify-snapshot-" + nowString)
