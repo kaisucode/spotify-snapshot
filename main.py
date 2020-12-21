@@ -53,13 +53,14 @@ def printTracks(tracks):
 
 sp, username = connect()
 
-nowString = datetime.now().strftime("%Y-%m-%dT%H%M%S")
+nowString = datetime.now().strftime("%Y-%m-%dT%H%M%SZ")
 afterThisDate = dateutil.parser.parse("2020-10-31T00:00:00Z")
 
 lastFile = ""
 with open('logs/newestLog.txt', 'r') as outfile:
     timestamp = outfile.read().split('\n')[0]
     lastFile += "logs/" + timestamp + ".json"
+    afterThisDate = dateutil.parser.parse(timestamp)
 
 oldSongs = {}
 with open(lastFile, 'r') as outfile:
@@ -89,22 +90,27 @@ for playlist in allPlaylists:
 
 
 # create new playlist
-#  sp.user_playlist_create(username, "spotify-snapshot-" + nowString)
-#  newPlaylistId = ""
-#  newPlaylistName = "spotify-snapshot-" + nowString
-#  newPlaylists = getAllPlaylists()
-#  for playlist in newPlaylists: 
-#      if (playlist["name"] == newPlaylistName): 
-#          newPlaylistId = playlist["id"]
-#  sp.user_playlist_add_tracks(username, newPlaylistId, newTracks)
+sp.user_playlist_create(username, "spotify-snapshot-" + nowString)
+newPlaylistId = ""
+newPlaylistName = "spotify-snapshot-" + nowString
+newPlaylists = getAllPlaylists()
+for playlist in newPlaylists: 
+    if (playlist["name"] == newPlaylistName): 
+        newPlaylistId = playlist["id"]
 
+numOfAdds = len(newTracks)//100 + 1
+for i in range(0, numOfAdds): 
+    fromNum = i * 100
+    toNum = (i + 1) * 100
+    partialTracks = newTracks[fromNum:toNum]
+    sp.user_playlist_add_tracks(username, newPlaylistId, partialTracks)
 
-#  newFilename = 'logs/' + nowString + ".json"
-#  with open(newFilename, 'w') as outfile:
-#      json.dump(currentSongs, outfile)
+newFilename = 'logs/' + nowString + ".json"
+with open(newFilename, 'w') as outfile:
+    json.dump(currentSongs, outfile)
 
-#  with open('logs/newestLog.txt', 'w') as outfile:
-#      outfile.write(nowString)
+with open('logs/newestLog.txt', 'w') as outfile:
+    outfile.write(nowString)
 
 
 
